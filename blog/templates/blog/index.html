@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+    <div class="text-center py-5">
+        <h1 class="display-4 fw-bold">Welcome to {% if user.is_authenticated %}{{ user.username }}'s Blog {% else %}My Blog{% endif %}</h1>
+        <p class="lead text-muted">Thoughts, and notes — written by hand, sometimes with a little help from AI.</p>
+        <a href="{% url 'all-posts-page' %}" class="btn btn-primary btn-lg mt-3">Read the Posts</a>
+    </div>
+{% endblock %}
+

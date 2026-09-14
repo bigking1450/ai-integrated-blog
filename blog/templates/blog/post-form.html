@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}{% if post %}Edit Post{% else %}Write a Post{% endif %}{% endblock %}
+
+{% block content %}
+<div class="mx-auto" style="max-width: 700px;">
+    <h1 class="mb-4">{% if post %}Edit Post{% else %}Write a Post{% endif %}</h1>
+
+    <form method="post" action="{% if post %}{% url 'edit-post' slug=post.slug %}{% else %}{% url 'add-post-page' %}{% endif %}">
+        {% csrf_token %}
+
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endfor %}
+
+        <div class="mb-3">
+            <label for="{{ form.title.id_for_label }}" class="form-label">{{ form.title.label }}</label>
+            <input type="text" name="{{ form.title.html_name }}" value="{{ form.title.value|default_if_none:'' }}" class="form-control" id="{{ form.title.id_for_label }}">
+            {% for error in form.title.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.excerpt.id_for_label }}" class="form-label">{{ form.excerpt.label }}</label>
+            <textarea name="{{ form.excerpt.html_name }}" class="form-control" id="{{ form.excerpt.id_for_label }}" rows="2">{{ form.excerpt.value|default_if_none:'' }}</textarea>
+            {% for error in form.excerpt.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-3">
+            <label for="{{ form.body.id_for_label }}" class="form-label">{{ form.body.label }}</label>
+            <textarea name="{{ form.body.html_name }}" class="form-control" id="{{ form.body.id_for_label }}" rows="12">{{ form.body.value|default_if_none:'' }}</textarea>
+            {% for error in form.body.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-4">
+            <label class="form-label d-block">{{ form.tags.label }}</label>
+            {% for checkbox in form.tags %}
+                <div class="form-check form-check-inline">
+                    {{ checkbox.tag }}
+                    <label class="form-check-label" for="{{ checkbox.id_for_label }}">{{ checkbox.choice_label }}</label>
+                </div>
+            {% endfor %}
+        </div>
+
+        {% if post %}
+            <button type="submit" class="btn btn-primary">Update Post</button>
+        {% else %}
+            <button type="submit" class="btn btn-primary">Add Post</button>
+        {% endif %}
+    </form>
+
+    {% if post %}
+    <hr class="my-5">
+    <h4 class="mb-3">Refine with AI</h4>
+    <form method="post" class="d-flex gap-2">
+        {% csrf_token %}
+        <input type="hidden" name="action" value="refine">
+        <input type="text" name="instruction" class="form-control" placeholder="e.g. make this more concise" required>
+        <button type="submit" class="btn btn-outline-secondary text-nowrap">Refine with AI</button>
+    </form>
+    {% endif %}
+</div>
+{% endblock %}

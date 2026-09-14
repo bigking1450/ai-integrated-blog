@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }}{% endblock %}
+
+{% block content %}
+<article class="mx-auto" style="max-width: 800px;">
+    <h1 class="mb-2">{{ post.title }}</h1>
+    <p class="text-muted">
+        By {{ post.author }} &middot; {{ post.created_at|date:"F j, Y" }}
+        {% if post.status == "draft" %}
+            <span class="badge bg-secondary">Draft</span>
+        {% endif %}
+    </p>
+
+    {% if post.tags.all %}
+    <div class="mb-3">
+        {% for tag in post.tags.all %}
+            <span class="badge bg-light text-dark border">{{ tag.name }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="fs-5 lh-lg">
+        {{ post.body|linebreaks }}
+    </div>
+
+    {% if request.user == post.author %}
+    <div class="mt-4 d-flex gap-2">
+        <a href="{% url 'edit-post' slug=post.slug %}" class="btn btn-outline-secondary">Edit</a>
+        <a href="{% url 'delete-post' slug=post.slug %}" class="btn btn-outline-danger">Delete</a>
+    </div>
+    {% endif %}
+
+    <a href="{% url 'all-posts-page' %}" class="d-inline-block mt-4">&larr; Back to all posts</a>
+</article>
+{% endblock %}

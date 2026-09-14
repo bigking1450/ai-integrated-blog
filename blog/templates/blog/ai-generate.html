@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Generate a Post with AI{% endblock %}
+
+{% block content %}
+<div class="mx-auto" style="max-width: 600px;">
+    <h1 class="mb-2">Generate a Post with AI</h1>
+    <p class="text-muted mb-4">Give it a topic, and review the draft before publishing.</p>
+
+    <form method="post">
+        {% csrf_token %}
+
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">{{ error }}</div>
+        {% endfor %}
+
+        <div class="mb-3">
+            <label for="{{ form.topic.id_for_label }}" class="form-label">{{ form.topic.label }}</label>
+            <input type="text" name="{{ form.topic.html_name }}" value="{{ form.topic.value|default_if_none:'' }}" class="form-control" id="{{ form.topic.id_for_label }}" placeholder="e.g. Getting started with Django signals">
+            {% for error in form.topic.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+        </div>
+
+        <div class="mb-4">
+            <label for="{{ form.tone.id_for_label }}" class="form-label">{{ form.tone.label }}</label>
+            <input type="text" name="{{ form.tone.html_name }}" value="{{ form.tone.value|default_if_none:'informative and engaging' }}" class="form-control" id="{{ form.tone.id_for_label }}">
+            {% for error in form.tone.errors %}<div class="text-danger small mt-1">{{ error }}</div>{% endfor %}
+        </div>
+
+        <button type="submit" class="btn btn-primary">Generate Draft</button>
+    </form>
+</div>
+{% endblock %}
